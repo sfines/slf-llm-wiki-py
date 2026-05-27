@@ -1,0 +1,96 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "slf-llm-wiki-py"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "google-adk>=2.0",
+    "instructor>=1.15.1",
+    "markdown-hero>=0.1.0",
+    "markitdown>=0.1.5",
+    "nicegui>=3.12.1",
+    "pydantic>=2.13.4",
+    "pydantic-settings>=2.14.1",
+    "python-dotenv>=1.2.2",
+    "pyyaml>=6.0.3",
+    "rank-bm25>=0.2.2",
+    "structlog>=25.5.0",
+]
+
+[project.scripts]
+wiki-ingest = "src.cli.main:main"
+wiki-chat = "src.cli.chat_cli:main"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.1.0",
+    "nox>=2026.4.10",
+    "pytest>=9.0.3",
+    "pytest-asyncio>=1.3.0",
+    "pytest-mock>=3.15.1",
+    "ruff>=0.15.14",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py314"
+exclude = [
+    ".git",
+    ".nox",
+    ".pytest_cache",
+    ".venv",
+    ".bmad",
+    ".claude",
+    ".cline",
+    ".agents",
+    "__pycache__",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "W", "I"]
+ignore = []
+
+[tool.mypy]
+python_version = "3.14"
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = false
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+exclude = [
+    "^_bmad",
+    "^\\.agents",
+    "^\\.claude",
+    "^\\.cline",
+    "^\\.nox",
+    "^\\.venv",
+]
+[[tool.mypy.overrides]]
+module = [
+    "pydantic.*",
+    "pydantic_settings.*",
+    "yaml",
+    "markitdown",
+    "google.*",
+    "markdown_hero",
+    "rank_bm25",
+    "nicegui.*",
+    "instructor",
+    "pytest_mock",
+    "structlog"
+]
+ignore_missing_imports = true
