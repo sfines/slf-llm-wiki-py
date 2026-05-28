@@ -1,16 +1,19 @@
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Optional, List
-from pydantic import BaseModel, Field, ConfigDict
+from typing import Dict, List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 from src.models.document import IndexedDocument
 
 logger = logging.getLogger(__name__)
 
+
 class IndexEntry(BaseModel):
     """Represents a single document record in the index.json metadata."""
+
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
     source_file: str
@@ -23,6 +26,7 @@ class IndexEntry(BaseModel):
 
 class IndexMetadata(BaseModel):
     """The complete structure of index.json."""
+
     records: Dict[str, IndexEntry] = Field(default_factory=dict)
 
 
@@ -31,6 +35,7 @@ class JsonIndexer:
     Manages reading and writing the JSON metadata index.
     Provides local caching logic and metadata persistence.
     """
+
     def __init__(self, index_path: Path):
         self.index_path = index_path
         self.metadata = self._load_index()
@@ -77,7 +82,7 @@ class JsonIndexer:
             document_id=doc.document_id,
             entity_type_slug=doc.entity_type_slug,
             summary_path=str(doc.summary_path),
-            raw_path=str(doc.raw_path)
+            raw_path=str(doc.raw_path),
         )
         self.metadata.records[content_hash] = entry
         self._save_index()

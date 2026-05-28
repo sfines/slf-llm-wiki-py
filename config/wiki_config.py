@@ -1,5 +1,6 @@
 from pathlib import Path
-from src.models.config import WikiConfig, EntityTypeConfig, LLMConfig
+
+from src.models.config import EntityTypeConfig, LLMConfig, WikiConfig
 
 config = WikiConfig(
     wiki_name="Test Wiki",
@@ -9,10 +10,7 @@ config = WikiConfig(
     llm=LLMConfig(backend="vertex", model_id="gemini-3.1-pro-preview"),
     entity_types=[
         EntityTypeConfig(
-            name="Manual",
-            slug="manuals",
-            wiki_subdir="Manuals",
-            prompt_generate=Path("prompts/summarize.md")
+            name="Manual", slug="manuals", wiki_subdir="Manuals", prompt_generate=Path("prompts/summarize.md")
         )
-    ]
+    ],
 )
