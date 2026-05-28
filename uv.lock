@@ -1846,6 +1846,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "google-adk" },
+    { name = "google-genai" },
     { name = "instructor" },
     { name = "markdown-hero" },
     { name = "markitdown" },
@@ -1871,6 +1872,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "google-adk", specifier = ">=2.0" },
+    { name = "google-genai", specifier = ">=1.75.0" },
     { name = "instructor", specifier = ">=1.15.1" },
     { name = "markdown-hero", specifier = ">=0.1.0" },
     { name = "markitdown", specifier = ">=0.1.5" },
