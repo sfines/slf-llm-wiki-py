@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 class DocumentParseError(Exception):
     """Raised when document parsing fails."""
+
     pass
 
 

@@ -84,15 +84,11 @@ exclude = [
 [[tool.mypy.overrides]]
 module = [
     "pydantic.*",
-    "pydantic_settings.*",
     "yaml",
     "markitdown",
     "google.*",
     "markdown_hero",
     "rank_bm25",
-    "nicegui.*",
-    "instructor",
-    "pytest_mock",
-    "structlog"
+    "nicegui.*"
 ]
 ignore_missing_imports = true

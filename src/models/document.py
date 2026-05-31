@@ -35,6 +35,7 @@ class HashedDocument(BaseModel):
     frontmatter: Dict[str, Any] = Field(default_factory=dict)
     content_hash: str
     document_id: str  # Deterministic UUID based on hash
+    short_hash: str | None = None
 
 
 class SummarizedDocument(BaseModel):
@@ -49,6 +50,7 @@ class SummarizedDocument(BaseModel):
     content_hash: str
     document_id: str
     summary_content: str
+    short_hash: str | None = None
 
 
 class IndexedDocument(BaseModel):

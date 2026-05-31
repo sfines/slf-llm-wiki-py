@@ -45,16 +45,8 @@ class Exporter:
 
             # 3. Export to Word using markdown-hero
             logger.info("Converting to Word document...")
-            # markdown-hero word_format might return a python-docx Document or raw bytes
-            doc = mdh.word_format(merged_content)
-
-            # Save the doc
-            if hasattr(doc, "save"):
-                doc.save(output_file)
-            else:
-                # If it's bytes
-                with open(output_file, "wb") as f:
-                    f.write(doc)
+            # markdown-hero word_format saves the doc directly and returns Path
+            mdh.word_format(merged_content, output_file)
 
             logger.info(f"Successfully exported Wiki to {output_file}")
 

@@ -56,6 +56,12 @@ def generate_content_hash(text: str) -> str:
     return hashlib.sha256(stripped_text.encode("utf-8")).hexdigest()
 
 
+def generate_short_hash(text: str, length: int = 8) -> str:
+    """Generates a short hash prefix from the content hash."""
+    full_hash = generate_content_hash(text)
+    return full_hash[:length]
+
+
 def generate_content_uuid(text: str) -> str:
     """Generates a deterministic UUID-like string based on content hash."""
     import uuid

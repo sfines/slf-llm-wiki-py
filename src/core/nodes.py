@@ -8,7 +8,7 @@ from google.adk import Event
 from markitdown import MarkItDown
 
 from src.models.document import HashedDocument, IndexedDocument, ParsedDocument, RawFile, SummarizedDocument
-from src.utils.text import generate_content_hash, generate_content_uuid
+from src.utils.text import generate_content_hash, generate_content_uuid, generate_short_hash
 
 logger = logging.getLogger(__name__)
 md = MarkItDown()
@@ -66,6 +66,7 @@ def hashing_node(parsed_doc: ParsedDocument) -> Event:
     """Hashes the parsed document to create a deterministic ID."""
     content_hash = generate_content_hash(parsed_doc.body)
     document_id = generate_content_uuid(parsed_doc.body)
+    short_hash = generate_short_hash(parsed_doc.body)
 
     hashed = HashedDocument(
         source_path=parsed_doc.source_path,
@@ -74,6 +75,7 @@ def hashing_node(parsed_doc: ParsedDocument) -> Event:
         frontmatter=parsed_doc.frontmatter,
         content_hash=content_hash,
         document_id=document_id,
+        short_hash=short_hash,
     )
     return Event(output=hashed)
 

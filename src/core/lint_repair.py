@@ -1,7 +1,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Dict, List
 
 import markdown_hero as mdh
 
@@ -22,10 +22,10 @@ class LinterAndRepairer:
         self.config = config
         self.repair_agent = create_repair_agent(config.llm)
 
-    def run_lint(self) -> Dict[Path, List[Dict[str, Any]]]:
+    def run_lint(self) -> Dict[Path, List[mdh.Issue]]:
         """Runs markdown-hero linting over all generated markdown files."""
         logger.info("Running static markdown linting...")
-        issues: Dict[Path, List[Dict[str, Any]]] = {}
+        issues: Dict[Path, List[mdh.Issue]] = {}
 
         for file_path in self.config.wiki_dir.glob("**/*.md"):
             if "raw" in file_path.parts:
@@ -53,16 +53,13 @@ class LinterAndRepairer:
                     rel_path = path.relative_to(self.config.wiki_dir)
                     f.write(f"## [{rel_path}]({rel_path})\n")
                     for issue in file_issues:
-                        f.write(
-                            f"- {issue.get('rule', 'Error')}: {issue.get('message', 'Unknown issue')} "
-                            f"(Line {issue.get('line', '?')})\n"
-                        )
+                        f.write(f"- {issue.rule}: {issue.message} (Line {issue.line})\n")
                     f.write("\n")
 
         logger.info(f"Linting complete. Found issues in {len(issues)} files. Report saved to {report_path.name}")
         return issues
 
-    async def run_repair(self, issues: Dict[Path, List[Dict[str, Any]]]):
+    async def run_repair(self, issues: Dict[Path, List[mdh.Issue]]):
         """Iterates through broken files and uses the repair agent to fix them."""
         if not issues:
             logger.info("No issues to repair.")
@@ -75,9 +72,11 @@ class LinterAndRepairer:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
+            issues_dicts = [{"rule": i.rule, "message": i.message, "line": i.line} for i in file_issues]
+
             prompt = (
                 "The following markdown file has structural issues detected by the linter.\n"
-                f"Issues: {json.dumps(file_issues)}\n\n"
+                f"Issues: {json.dumps(issues_dicts)}\n\n"
                 "Please fix these issues and output the corrected markdown. Do NOT change the core text.\n"
                 f"Content:\n{content}"
             )

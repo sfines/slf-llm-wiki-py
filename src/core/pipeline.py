@@ -74,6 +74,7 @@ class WikiPipeline:
                     frontmatter=hashed_doc.frontmatter,
                     content_hash=hashed_doc.content_hash,
                     document_id=hashed_doc.document_id,
+                    short_hash=hashed_doc.short_hash,
                     summary_content="",
                 )
             )
@@ -90,6 +91,7 @@ class WikiPipeline:
                 frontmatter=hashed_doc.frontmatter,
                 content_hash=hashed_doc.content_hash,
                 document_id=hashed_doc.document_id,
+                short_hash=hashed_doc.short_hash,
                 summary_content=summary or "",
             )
         )
@@ -108,10 +110,10 @@ class WikiPipeline:
         out_dir = self.config.wiki_dir / entity_config.wiki_subdir
         out_dir.mkdir(parents=True, exist_ok=True)
 
-        out_path = out_dir / f"{summarized_doc.document_id}.md"
+        out_path = out_dir / f"{summarized_doc.entity_type_slug}-{summarized_doc.short_hash}.md"
         raw_dir = out_dir / "raw"
         raw_dir.mkdir(parents=True, exist_ok=True)
-        raw_path = raw_dir / f"{summarized_doc.document_id}_raw.md"
+        raw_path = raw_dir / f"{summarized_doc.entity_type_slug}-{summarized_doc.short_hash}_raw.md"
 
         if not raw_path.exists():
             with open(raw_path, "w", encoding="utf-8") as f:
@@ -138,12 +140,19 @@ class WikiPipeline:
             return
 
         from google.adk import Runner
+        from google.adk.apps.app import App
+        from google.adk.sessions.in_memory_session_service import InMemorySessionService
+
+        app = App(name="ingestion", root_agent=self.ingestion_workflow)
+        session_service = InMemorySessionService()
 
         for raw_file in raw_files:
             logger.info(f"Processing {raw_file.source_path.name} via ADK Workflow")
-            runner = Runner(agent=self.ingestion_workflow)
+            runner = Runner(app=app, session_service=session_service)
             # Send the initial item into the workflow graph
-            events = runner.run_async(new_message=raw_file)
+            events = runner.run_async(
+                user_id="local_user", session_id=str(hash(raw_file.source_path)), state_delta={"raw_file": raw_file}
+            )
             async for _ in events:
                 # ADK 2.0 flows: parser_node -> hashing_node -> cache_check_node -> generator_node -> indexer_node
                 pass

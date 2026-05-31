@@ -24,10 +24,16 @@ def get_model(config: LLMConfig):
     # In a full implementation, we'd map "openrouter", "ollama", etc.
     # to their respective ADK Model implementations.
     if config.backend == "vertex":
-        return VertexGemini(model=config.model_id, generation_config={"temperature": config.temperature})
+        return VertexGemini(model=config.model_id)
     else:
         # Fallback to standard Gemini (or other supported ADK models in the future)
-        return Gemini(model=config.model_id, generation_config={"temperature": config.temperature})
+        return Gemini(model=config.model_id)
+
+
+def _get_generate_config(config: LLMConfig):
+    from google.genai import types
+
+    return types.GenerateContentConfig(temperature=config.temperature)
 
 
 def create_writer_agent(config: LLMConfig, custom_instruction: Optional[str] = None) -> Agent:
@@ -39,7 +45,12 @@ Focus on extracting key concepts, architecture, benefits, drawbacks, and definit
 Format: Pure Markdown only. Do not output anything outside the markdown content."""
     )
 
-    return Agent(name="writer_agent", instruction=instruction, model=get_model(config))
+    return Agent(
+        name="writer_agent",
+        instruction=instruction,
+        model=get_model(config),
+        generate_content_config=_get_generate_config(config),
+    )
 
 
 def create_evaluator_agent(config: LLMConfig, custom_instruction: Optional[str] = None) -> Agent:
@@ -52,7 +63,12 @@ If the page is good as-is, state "APPROVED".
 Output your critique clearly."""
     )
 
-    return Agent(name="evaluator_agent", instruction=instruction, model=get_model(config))
+    return Agent(
+        name="evaluator_agent",
+        instruction=instruction,
+        model=get_model(config),
+        generate_content_config=_get_generate_config(config),
+    )
 
 
 def create_editor_agent(config: LLMConfig, custom_instruction: Optional[str] = None) -> Agent:
@@ -63,7 +79,12 @@ Your job is to revise a generated wiki page based on the provided critique.
 Output the COMPLETE revised Markdown. Do not output anything outside the markdown content."""
     )
 
-    return Agent(name="editor_agent", instruction=instruction, model=get_model(config))
+    return Agent(
+        name="editor_agent",
+        instruction=instruction,
+        model=get_model(config),
+        generate_content_config=_get_generate_config(config),
+    )
 
 
 def create_indexer_agent(config: LLMConfig, custom_instruction: Optional[str] = None) -> Agent:
@@ -76,7 +97,12 @@ def create_indexer_agent(config: LLMConfig, custom_instruction: Optional[str] = 
         "(e.g., `- [Page Title](page-file-name.md)`)."
     )
 
-    return Agent(name="indexer_agent", instruction=instruction, model=get_model(config))
+    return Agent(
+        name="indexer_agent",
+        instruction=instruction,
+        model=get_model(config),
+        generate_content_config=_get_generate_config(config),
+    )
 
 
 def create_repair_agent(config: LLMConfig, custom_instruction: Optional[str] = None) -> Agent:
@@ -89,7 +115,12 @@ def create_repair_agent(config: LLMConfig, custom_instruction: Optional[str] = N
         "Output the COMPLETE repaired Markdown. Do not output anything outside the markdown content."
     )
 
-    return Agent(name="repair_agent", instruction=instruction, model=get_model(config))
+    return Agent(
+        name="repair_agent",
+        instruction=instruction,
+        model=get_model(config),
+        generate_content_config=_get_generate_config(config),
+    )
 
 
 def create_chat_agent(config: LLMConfig) -> Agent:
@@ -98,4 +129,5 @@ def create_chat_agent(config: LLMConfig) -> Agent:
         instruction="You are a helpful assistant specialized in answering questions "
         "about the wiki content provided in the context.",
         model=get_model(config),
+        generate_content_config=_get_generate_config(config),
     )

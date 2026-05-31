@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 
+from src.core.indexer import IndexEntry
 from src.core.pipeline import WikiPipeline
 from src.models.config import EntityTypeConfig, WikiConfig
 from src.models.document import HashedDocument, SummarizedDocument
@@ -118,6 +119,16 @@ class TestCacheCheckNode:
 
         existing_file = manuals_dir / "manuals-abcd1234.md"
         existing_file.write_text("Existing content")
+
+        # Add the index entry that cache_check_node looks for
+        pipeline.indexer.metadata.records["existing-hash"] = IndexEntry(
+            source_file="test.pdf",
+            document_hash="existing-hash",
+            document_id="existing-uuid",
+            entity_type_slug="manuals",
+            summary_path=str(existing_file),
+            raw_path="out/raw/test_raw.md",
+        )
 
         hashed = HashedDocument(
             source_path=tmp_path / "test.pdf",
