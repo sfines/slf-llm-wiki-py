@@ -1,5 +1,5 @@
-import re
 import os
+import re
 
 yaml_path = '_bmad-output/implementation-artifacts/sprint-status.yaml'
 epics_path = '_bmad-output/planning-artifacts/epics.md'
@@ -22,16 +22,16 @@ for block in story_blocks[1:]:
     match = re.match(r'(\d+\.\d+):\s*(.*)', header)
     if not match:
         continue
-    
+
     story_num = match.group(1)
     story_title = match.group(2)
-    
+
     us_match = re.search(r'(As a .*?)(?=\*\*Acceptance Criteria:\*\*)', block, re.DOTALL)
     ac_match = re.search(r'(\*\*Acceptance Criteria:\*\*.*?)$', block, re.DOTALL)
-    
+
     user_story = us_match.group(1).strip() if us_match else ""
     acc_criteria = ac_match.group(1).strip() if ac_match else ""
-    
+
     stories_info[story_num] = {
         'title': story_title,
         'user_story': user_story,
@@ -48,15 +48,15 @@ for key in keys:
     num_match = re.match(r'^(\d+)-(\d+)-', key)
     if not num_match:
         continue
-    
+
     story_num = f"{num_match.group(1)}.{num_match.group(2)}"
     epic_key = f"epic-{num_match.group(1)}"
-    
+
     info = stories_info.get(story_num)
     if not info:
         print(f"Could not find info for {key}")
         continue
-        
+
     md_content = f"""# Story {key}: {info['title']}
 
 ## User Story
@@ -82,7 +82,7 @@ for key in keys:
     md_path = os.path.join(out_dir, f"{key}.md")
     with open(md_path, 'w') as f:
         f.write(md_content)
-    
+
     # update yaml contents
     modified_yaml = re.sub(rf"  {key}: backlog", f"  {key}: ready-for-dev", modified_yaml)
     modified_yaml = re.sub(rf"  {epic_key}: backlog", f"  {epic_key}: in-progress", modified_yaml)
