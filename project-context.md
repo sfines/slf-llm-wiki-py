@@ -1,5 +1,11 @@
 # Project Context and Standards
 
+## Workflow & Version Control
+*   **Git Flow**: The project uses the Git Flow branching model.
+    *   **Production branch**: `trunk`
+    *   **Next release branch**: `develop`
+    *   **Prefixes**: `feature/`, `bugfix/`, `release/`, `hotfix/`
+
 ## Coding Standards
 *   **Logging**: Use `structlog` for structured logging. Do not build custom logging solutions.
 *   **Tooling**: Use `uv` for package management, `nox` for test automation, `pytest` for testing, `ruff` for linting/formatting, and `mypy` for type checking.
