@@ -43,7 +43,7 @@ story_location: /Users/sfines/workspace/slf-llm-wiki-py/_bmad-output/implementat
 
 development_status:
   epic-1: in-progress
-  1-1-project-initialization-infrastructure-scaffold: in-progress
+  1-1-project-initialization-infrastructure-scaffold: done
   1-2-raw-document-parsing-markitdown: ready-for-dev
   1-3-content-hashing-idempotency: ready-for-dev
   1-4-cli-ingestion-loop-ledger-feedback: ready-for-dev
