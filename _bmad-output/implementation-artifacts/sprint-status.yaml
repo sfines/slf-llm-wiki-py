@@ -45,7 +45,7 @@ development_status:
   epic-1: in-progress
   1-1-project-initialization-infrastructure-scaffold: done
   1-2-raw-document-parsing-markitdown: done
-  1-3-content-hashing-idempotency: ready-for-dev
+  1-3-content-hashing-idempotency: done
   1-4-cli-ingestion-loop-ledger-feedback: ready-for-dev
   epic-1-retrospective: optional
   epic-2: in-progress

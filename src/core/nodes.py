@@ -7,8 +7,8 @@ import yaml
 from google.adk import Event
 from markitdown import MarkItDown
 
+from src.core.hashing import generate_content_hash, generate_content_uuid, generate_short_hash
 from src.models.document import HashedDocument, IndexedDocument, ParsedDocument, RawFile, SummarizedDocument
-from src.utils.text import generate_content_hash, generate_content_uuid, generate_short_hash
 
 logger = logging.getLogger(__name__)
 md = MarkItDown()

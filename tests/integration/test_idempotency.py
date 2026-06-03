@@ -17,28 +17,28 @@ class TestIdempotency:
         assert all(c in "0123456789abcdef" for c in hash1)
 
     def test_hash_normalization_ensures_idempotency(self):
-        from src.core.hashing import compute_content_hash
+        from src.core.hashing import generate_content_hash
 
         content_windows = "line1\r\nline2\r\nline3"
         content_unix = "line1\nline2\nline3"
         content_old_mac = "line1\rline2\rline3"
 
-        hash_windows = compute_content_hash(content_windows)
-        hash_unix = compute_content_hash(content_unix)
-        hash_old_mac = compute_content_hash(content_old_mac)
+        hash_windows = generate_content_hash(content_windows)
+        hash_unix = generate_content_hash(content_unix)
+        hash_old_mac = generate_content_hash(content_old_mac)
 
         assert hash_windows == hash_unix == hash_old_mac
 
     def test_different_content_different_hash(self):
-        from src.core.hashing import compute_content_hash
+        from src.core.hashing import generate_content_hash
 
         content1 = "Content A"
         content2 = "Content B"
         content3 = "Content C"
 
-        hash1 = compute_content_hash(content1)
-        hash2 = compute_content_hash(content2)
-        hash3 = compute_content_hash(content3)
+        hash1 = generate_content_hash(content1)
+        hash2 = generate_content_hash(content2)
+        hash3 = generate_content_hash(content3)
 
         assert hash1 != hash2
         assert hash2 != hash3

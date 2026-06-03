@@ -66,7 +66,7 @@ def normalize_content(text: str) -> str:
     return text.strip()
 
 
-def compute_content_hash(text: str) -> str:
+def generate_content_hash(text: str) -> str:
     """
     Computes a deterministic SHA-256 hash from the given text.
 
@@ -95,7 +95,7 @@ def generate_short_hash(text: str, length: int = 8) -> str:
     Returns:
         First `length` characters of the SHA-256 hash
     """
-    full_hash = compute_content_hash(text)
+    full_hash = generate_content_hash(text)
     return full_hash[:length]
 
 
@@ -111,5 +111,5 @@ def generate_content_uuid(text: str) -> str:
     """
     import uuid
 
-    hash_hex = compute_content_hash(text)
+    hash_hex = generate_content_hash(text)
     return str(uuid.UUID(hash_hex[:32]))
